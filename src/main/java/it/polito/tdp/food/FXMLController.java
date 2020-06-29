@@ -1,8 +1,12 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.food.model.Fcal;
+import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +20,7 @@ import javafx.scene.control.TextField;
 public class FXMLController {
 	
 	private Model model;
-
+	List<Food> cibi=new ArrayList<>();
     @FXML
     private ResourceBundle resources;
 
@@ -39,24 +43,38 @@ public class FXMLController {
     private Button btnSimula;
 
     @FXML
-    private ComboBox<?> boxFood;
+    private ComboBox<Food> boxFood;
 
     @FXML
     private TextArea txtResult;
 
     @FXML
     void doCalorie(ActionEvent event) {
-
+    	int i=0;
+    	txtResult.clear();
+    	List<Fcal> migliori=new ArrayList<>(model.dammiVicini(boxFood.getValue().getFood_code()));
+    	
+    	while(i<5) {
+    		txtResult.appendText(migliori.get(i).toString()+"\n");
+    		i++;
+    	}
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	cibi=new ArrayList<>(model.creaGrefo(Integer.parseInt(txtPorzioni.getText())));
+    	boxFood.getItems().clear();
+    	boxFood.getItems().addAll(cibi);
+    	txtResult.clear();
+    	txtResult.appendText("Grafo creato");
     }
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	txtResult.clear();
+    	for(Integer i: model.simula(boxFood.getValue().getFood_code(), Integer.parseInt(txtK.getText()))) {
+    	txtResult.appendText(""+i+"\n");
+    	}
     }
 
     @FXML
